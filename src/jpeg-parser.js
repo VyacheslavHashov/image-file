@@ -1,4 +1,4 @@
-import ExifParser from 'exif-parser'
+import ExifParser from 'exif-js'
 
 const MARKER_SIGNATURE = 0xFF
 
@@ -65,17 +65,14 @@ export default class JPEGParser {
 
   parseExif() {
     try {
-      var exif = ExifParser.create(this.data.buffer).parse()
+      var tags = ExifParser.readFromBinaryFile(this.data.buffer)
     } catch(error) {
       return
     }
 
-    if (!exif.tags) {
+    if (!tags) {
       return
     }
-
-    let tags = exif.tags
-
     if (tags.XResolution && tags.YResolution) {
       this.parseDensity(tags.XResolution, tags.YResolution, tags.ResolutionUnit - 1)
     }
